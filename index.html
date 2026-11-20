@@ -24,9 +24,7 @@
             background: #050505; border: 1px solid #222; padding: 15px;
             margin: 20px 0; cursor: pointer; transition: 0.3s; user-select: text;
         }
-        .hidden-text {
-            color: #050505; transition: 0.3s;
-        }
+        .hidden-text { color: #050505; transition: 0.3s; }
         .hidden-box:hover .hidden-text,
         .hidden-text::selection { color: #00ff41; }
 
@@ -56,23 +54,41 @@
         }
         .morse-btns button:hover { background: #00ff41; color: #000; }
 
-        .color-boxes { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
-        .color-box { width: 40px; height: 40px; border-radius: 5px; border: 1px solid #333; }
+        .puzzle-image {
+            width: 100%; border-radius: 10px; border: 1px solid #333;
+            margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
 
-        .input-group { display: flex; gap: 10px; margin-top: 20px; flex-direction: column; }
+        .input-group { display: flex; gap: 10px; margin-top: 20px; flex-direction: column; align-items: center; }
         .input-group input {
-            flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #00ff41;
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #00ff41;
             background: #000; color: #00ff41; font-family: inherit; font-size: 16px;
             outline: none; text-align: center;
         }
         .input-group button {
-            padding: 12px 20px; background: #00ff41; color: #000;
+            width: 100%; padding: 12px 20px; background: #00ff41; color: #000;
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
             font-family: inherit; transition: 0.3s;
         }
         .input-group button:hover { background: #fff; }
 
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center;
+            align-items: center; padding: 20px; flex-direction: column;
+        }
+        .modal.active { display: flex; }
+        .modal img {
+            max-width: 95%; max-height: 80vh; border-radius: 10px;
+            border: 2px solid #ffcc00; box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
+            cursor: pointer; animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .close-modal-hint { color: #888; font-size: 12px; margin-top: 15px; }
+
         .error { color: #ff0000; font-size: 14px; margin-top: 10px; height: 20px; }
+        .info { color: #ffcc00; font-size: 14px; margin-top: 10px; height: 20px; }
     </style>
 </head>
 <body>
@@ -119,30 +135,33 @@
 
         <!-- معما ۳ -->
         <div class="stage" id="stage3">
-            <h1>مرحله ۳: رنگ‌ها</h1>
-            <p>رنگ‌ها را به حروف تبدیل کن. هر رنگ یک معنا دارد. ترتیب را در راهنما ببین. جواب یک جمله طولانی است.</p>
-            <div class="color-boxes">
-                <div class="color-box" style="background:#ff0000;"></div>
-                <div class="color-box" style="background:#0000ff;"></div>
-                <div class="color-box" style="background:#ff0000;"></div>
-                <div class="color-box" style="background:#ffffff;"></div>
-                <div class="color-box" style="background:#000000;"></div>
-            </div>
-            <p style="font-size:12px; color:#555;">راهنما: سفید=ن، قرمز=خ، آبی=و</p>
+            <h1>مرحله ۳: رازِ نهفته در تاریکی</h1>
+            <p>طومار را بخوان و رمز را بگشا. اما اگر در تاریکی گم شدی، نامِ «راهنما» را فریاد بزن.</p>
+            
+            <!-- عکس طومار (اسم دقیق فایل) -->
+            <img src="InShot_20261120_134848754.jpg" class="puzzle-image" alt="طومار معما">
+            
             <div class="input-group">
-                <input type="text" id="answer3" placeholder="جمله رمز را وارد کنید...">
+                <input type="text" id="answer3" placeholder="رمز یا راهنما را وارد کنید...">
                 <button onclick="checkAnswer3()">تایید</button>
             </div>
             <div class="error" id="error3"></div>
+            <div class="info" id="info3"></div>
         </div>
 
         <!-- پایان -->
         <div class="stage" id="stageFinal">
             <h1 style="color:#ffcc00;">تبریک!</h1>
-            <p>تو از تاریکی گذشتی، سکوت را شنیدی و رنگ‌ها را دیدی.</p>
+            <p>تو از تاریکی گذشتی، سکوت را شنیدی و رمز را گشودی.</p>
             <p style="color:#fff; font-size:20px; margin-top:20px;">جواب نهایی: <strong>راز</strong></p>
         </div>
 
+    </div>
+
+    <!-- مودال راهنما (اسم دقیق فایل) -->
+    <div class="modal" id="helpModal" onclick="closeHelp()">
+        <img src="InShot_20261120_134352280.jpg" alt="راهنما">
+        <div class="close-modal-hint">برای بستن، هر جای صفحه را لمس کن</div>
     </div>
 
     <script>
@@ -174,15 +193,29 @@
             }
         }
 
+        function openHelp() {
+            document.getElementById('helpModal').classList.add('active');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpModal').classList.remove('active');
+        }
+
         function checkAnswer3() {
-            const val = document.getElementById('answer3').value.trim();
-            // جواب: خون در رگ های سرد، راز را فاش میکند
-            if (val === 'خون در رگ های سرد، راز را فاش میکند' || 
-                val === 'خون در رگ های سرد راز را فاش میکند') {
+            const val = document.getElementById('answer3').value.trim().toUpperCase();
+            const info = document.getElementById('info3');
+            const error = document.getElementById('error3');
+
+            if (val === 'راهنما') {
+                openHelp();
+                info.innerText = 'راهنما باز شد!';
+                error.innerText = '';
+            } else if (val === 'PAVONE' || val === 'پاوونه') {
                 document.getElementById('stage3').classList.remove('active');
                 document.getElementById('stageFinal').classList.add('active');
             } else {
-                document.getElementById('error3').innerText = 'اشتباه است. دوباره تلاش کن.';
+                error.innerText = 'اشتباه است. دوباره تلاش کن. (یا کلمه راهنما را وارد کن)';
+                info.innerText = '';
             }
         }
     </script>
