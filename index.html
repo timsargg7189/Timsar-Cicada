@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیکادای تیمسار</title>
+    <title>معمای تاریکی</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,44 +20,46 @@
         h1 { font-size: 24px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff41; letter-spacing: 2px; }
         p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; color: #aaa; }
 
-        /* معمای ۱: متن نامرئی */
-        .hidden-text {
-            color: #050505; /* همرنگ پس‌زمینه */
-            background: #050505;
-            user-select: text; /* قابل انتخاب */
-            padding: 10px;
-            border: 1px dashed #333;
-            margin: 20px 0;
-            transition: 0.3s;
+        .hidden-box {
+            background: #050505; border: 1px solid #222; padding: 15px;
+            margin: 20px 0; cursor: pointer; transition: 0.3s; user-select: text;
         }
-        .hidden-text::selection { background: #00ff41; color: #000; }
+        .hidden-text {
+            color: #050505; transition: 0.3s;
+        }
+        .hidden-box:hover .hidden-text,
+        .hidden-text::selection { color: #00ff41; }
 
-        /* معمای ۲: دایره چشمک‌زن */
+        .morse-area { margin: 20px 0; }
         .morse-circle {
             width: 100px; height: 100px; border-radius: 50%;
-            background: #111; margin: 30px auto; display: flex;
+            background: #111; margin: 0 auto 20px; display: flex;
             justify-content: center; align-items: center;
             border: 2px solid #00ff41; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
         }
         .morse-light {
             width: 40px; height: 40px; border-radius: 50%;
             background: #00ff41; opacity: 0;
-            animation: blinkMorse 3s infinite;
             box-shadow: 0 0 30px #00ff41;
         }
+        .morse-light.playing { animation: blinkMorse 3s infinite; }
         @keyframes blinkMorse {
-            0%, 10% { opacity: 1; } 15%, 25% { opacity: 0; } /* S: ... */
+            0%, 10% { opacity: 1; } 15%, 25% { opacity: 0; }
             30%, 40% { opacity: 1; } 45%, 55% { opacity: 0; }
             60%, 70% { opacity: 1; } 75%, 85% { opacity: 0; }
             90%, 100% { opacity: 0; }
         }
+        .morse-btns { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .morse-btns button {
+            padding: 10px 25px; border-radius: 8px; border: 1px solid #00ff41;
+            background: transparent; color: #00ff41; cursor: pointer; font-family: inherit; transition: 0.3s;
+        }
+        .morse-btns button:hover { background: #00ff41; color: #000; }
 
-        /* معمای ۷: رنگ‌ها */
         .color-boxes { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
         .color-box { width: 40px; height: 40px; border-radius: 5px; border: 1px solid #333; }
 
-        /* فرم ورودی */
-        .input-group { display: flex; gap: 10px; margin-top: 20px; }
+        .input-group { display: flex; gap: 10px; margin-top: 20px; flex-direction: column; }
         .input-group input {
             flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #00ff41;
             background: #000; color: #00ff41; font-family: inherit; font-size: 16px;
@@ -80,8 +82,13 @@
         <div class="stage active" id="stage1">
             <h1>مرحله ۱: سکوت</h1>
             <p>در تاریکی چیزی پنهان است. برای دیدنش، آن را انتخاب کن.</p>
-            <div class="hidden-text" id="hiddenText">
-                ببین، در آینه بنگر، جواب در انعکاس توست.
+            <div class="hidden-box" onclick="revealText()">
+                <div class="hidden-text" id="hiddenText">
+                    کجا می‌توانی خودت را ببینی؟<br>
+                    نه در آب، نه در شیشه، نه در چشم دیگری.<br>
+                    در دل تاریکی، تنها انعکاس خودت را می‌بینی.<br>
+                    نام آن چیست؟
+                </div>
             </div>
             <div class="input-group">
                 <input type="text" id="answer1" placeholder="پاسخ را وارد کنید...">
@@ -93,9 +100,15 @@
         <!-- معما ۲ -->
         <div class="stage" id="stage2">
             <h1>مرحله ۲: چشمک</h1>
-            <p>نور را دنبال کن. نقطه‌ها و خطوط را بشمار.</p>
-            <div class="morse-circle">
-                <div class="morse-light"></div>
+            <p>نور را دنبال کن. نقطه‌ها و خطوط را بشمار. وقتی آماده بودی، پخش کن.</p>
+            <div class="morse-area">
+                <div class="morse-circle">
+                    <div class="morse-light" id="morseLight"></div>
+                </div>
+                <div class="morse-btns">
+                    <button onclick="startMorse()">پخش</button>
+                    <button onclick="stopMorse()">استپ</button>
+                </div>
             </div>
             <div class="input-group">
                 <input type="text" id="answer2" placeholder="پاسخ را وارد کنید...">
@@ -104,10 +117,10 @@
             <div class="error" id="error2"></div>
         </div>
 
-        <!-- معما ۷ -->
+        <!-- معما ۳ -->
         <div class="stage" id="stage3">
             <h1>مرحله ۳: رنگ‌ها</h1>
-            <p>رنگ‌ها را به حروف تبدیل کن. هر رنگ یک معنا دارد.</p>
+            <p>رنگ‌ها را به حروف تبدیل کن. هر رنگ یک معنا دارد. ترتیب را در راهنما ببین. جواب یک جمله طولانی است.</p>
             <div class="color-boxes">
                 <div class="color-box" style="background:#ff0000;"></div>
                 <div class="color-box" style="background:#0000ff;"></div>
@@ -115,9 +128,9 @@
                 <div class="color-box" style="background:#ffffff;"></div>
                 <div class="color-box" style="background:#000000;"></div>
             </div>
-            <p style="font-size:12px; color:#555;">(قرمز=خ، آبی=و، سفید=ن)</p>
+            <p style="font-size:12px; color:#555;">راهنما: سفید=ن، قرمز=خ، آبی=و</p>
             <div class="input-group">
-                <input type="text" id="answer3" placeholder="پاسخ را وارد کنید...">
+                <input type="text" id="answer3" placeholder="جمله رمز را وارد کنید...">
                 <button onclick="checkAnswer3()">تایید</button>
             </div>
             <div class="error" id="error3"></div>
@@ -127,36 +140,14 @@
         <div class="stage" id="stageFinal">
             <h1 style="color:#ffcc00;">تبریک!</h1>
             <p>تو از تاریکی گذشتی، سکوت را شنیدی و رنگ‌ها را دیدی.</p>
-            <p style="color:#fff; font-size:20px; margin-top:20px;">جواب نهایی: <strong>سیکادا</strong></p>
+            <p style="color:#fff; font-size:20px; margin-top:20px;">جواب نهایی: <strong>راز</strong></p>
         </div>
 
     </div>
 
     <script>
-        // هش کردن جواب‌ها (SHA-256)
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // هش جواب‌ها
-        const hashes = {
-            // جواب 1: آینه
-            h1: 'a5f3c6b6d60f8c4f4b1d3e6f6f7b8a9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a',
-            // جواب 2: سکوت
-            h2: 'b6e4d5c5e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b',
-            // جواب 3: خون
-            h3: 'c7f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5'
-        };
-
-        // چون هش واقعی رو نداریم، اینجا یه شبیه‌ساز ساده می‌ذاریم (برای تست)
-        // در نسخه نهایی، هش‌ها باید با یه ابزار آنلاین تولید بشن
-        async function checkHash(input, hash) {
-            const inputHash = await sha256(input.trim().toLowerCase());
-            // برای تست، هش‌های ساده‌شده
-            return true; // موقتاً همه رو قبول می‌کنه تا تو هش‌های واقعی رو بذاری
+        function revealText() {
+            document.getElementById('hiddenText').style.color = '#00ff41';
         }
 
         function checkAnswer1() {
@@ -169,9 +160,13 @@
             }
         }
 
+        const light = document.getElementById('morseLight');
+        function startMorse() { light.classList.add('playing'); }
+        function stopMorse() { light.classList.remove('playing'); }
+
         function checkAnswer2() {
-            const val = document.getElementById('answer2').value.trim();
-            if (val === 'سکوت' || val === 'sokout' || val === 'sokut') {
+            const val = document.getElementById('answer2').value.trim().toLowerCase();
+            if (val === 'سکوت' || val === 'sokot' || val === 'sokout' || val === 'sokut') {
                 document.getElementById('stage2').classList.remove('active');
                 document.getElementById('stage3').classList.add('active');
             } else {
@@ -181,7 +176,9 @@
 
         function checkAnswer3() {
             const val = document.getElementById('answer3').value.trim();
-            if (val === 'خون' || val === 'khoon' || val === 'khon') {
+            // جواب: خون در رگ های سرد، راز را فاش میکند
+            if (val === 'خون در رگ های سرد، راز را فاش میکند' || 
+                val === 'خون در رگ های سرد راز را فاش میکند') {
                 document.getElementById('stage3').classList.remove('active');
                 document.getElementById('stageFinal').classList.add('active');
             } else {
