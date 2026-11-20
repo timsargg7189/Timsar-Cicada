@@ -20,6 +20,7 @@
         h1 { font-size: 24px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff41; letter-spacing: 2px; }
         p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; color: #aaa; }
 
+        /* معمای ۱ */
         .hidden-box {
             background: #050505; border: 1px solid #222; padding: 15px;
             margin: 20px 0; cursor: pointer; transition: 0.3s; user-select: text;
@@ -28,6 +29,7 @@
         .hidden-box:hover .hidden-text,
         .hidden-text::selection { color: #00ff41; }
 
+        /* معمای ۲ */
         .morse-area { margin: 20px 0; }
         .morse-circle {
             width: 100px; height: 100px; border-radius: 50%;
@@ -54,6 +56,7 @@
         }
         .morse-btns button:hover { background: #00ff41; color: #000; }
 
+        /* معمای ۳ */
         .puzzle-image {
             width: 100%; border-radius: 10px; border: 1px solid #333;
             margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
@@ -72,6 +75,7 @@
         }
         .input-group button:hover { background: #fff; }
 
+        /* مودال راهنما */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center;
@@ -86,7 +90,6 @@
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
         .close-modal-hint { color: #888; font-size: 12px; margin-top: 15px; }
-
         .error { color: #ff0000; font-size: 14px; margin-top: 10px; height: 20px; }
         .info { color: #ffcc00; font-size: 14px; margin-top: 10px; height: 20px; }
     </style>
@@ -138,8 +141,8 @@
             <h1>مرحله ۳: رازِ نهفته در تاریکی</h1>
             <p>طومار را بخوان و رمز را بگشا. اما اگر در تاریکی گم شدی، نامِ «راهنما» را فریاد بزن.</p>
             
-            <!-- عکس طومار (اسم دقیق فایل) -->
-            <img src="InShot_20261120_134848754.jpg" class="puzzle-image" alt="طومار معما">
+            <!-- عکس طومار با اعداد فارسی -->
+            <img src="InShot_۲۰۲۶۱۱۲۰_۱۳۴۸۴۸۷۵۴.jpg" class="puzzle-image" alt="طومار معما">
             
             <div class="input-group">
                 <input type="text" id="answer3" placeholder="رمز یا راهنما را وارد کنید...">
@@ -158,9 +161,9 @@
 
     </div>
 
-    <!-- مودال راهنما (اسم دقیق فایل) -->
+    <!-- مودال راهنما با اعداد فارسی -->
     <div class="modal" id="helpModal" onclick="closeHelp()">
-        <img src="InShot_20261120_134352280.jpg" alt="راهنما">
+        <img src="InShot_۲۰۲۶۱۱۲۰_۱۳۴۳۵۲۲۸۰.jpg" alt="راهنما">
         <div class="close-modal-hint">برای بستن، هر جای صفحه را لمس کن</div>
     </div>
 
